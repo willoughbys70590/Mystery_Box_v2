@@ -45,7 +45,7 @@ class Game:
         self.game_frame.grid()
 
         # Heading Row
-        self.heading_label = Label (self.game_frame, text="Heading",
+        self.heading_label = Label(self.game_frame, text="Heading",
                                     font="Arial 24 bold", padx=10,
                                     pady=10)
         self.heading_label.grid(row=0)
@@ -58,7 +58,7 @@ class Game:
         self.balance_label.grid(row=2)
 
         self.play_button = Button(self.game_frame, text="Gain",
-                                padx=10, pady=10, command=self.reveal_boxes)
+                                    padx=10, pady=10, command=self.reveal_boxes)
         self.play_button.grid(row=3)
 
     def reveal_boxes(self):
@@ -67,7 +67,7 @@ class Game:
 
         # Adjust the balance (subtract game cost and add pay out)
         # For testing purposes, just add 2
-        current_balance +=2
+        current_balance += 2
 
         # Set balance to adjusted balance
         self.balance.set(current_balance)
@@ -75,12 +75,9 @@ class Game:
         # Edit label so user can see their balance
         self.balance_label.configure(text="Balance: {}".format(current_balance))
 
-
 # main routine
 if __name__ == "__main__":
     root = Tk()
     root.title("Mystrey Box Game")
     something = Start(root)
     root.mainloop()
-
-
