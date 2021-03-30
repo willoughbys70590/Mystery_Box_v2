@@ -25,6 +25,25 @@ class Start:
                                           wrap=275, justify=LEFT, padx=10, pady=10)
         self.mystery_instructions.grid(row=1)
 
+        # Entry box, Button & Error Label (row 2)
+        self.entry_error_frame = Frame(self.start_frame, width=200)
+        self.entry_error_frame.grid(row=2)
+
+        self.start_amount_entry = Entry(self.entry_error_frame,
+                                        font="Arial 19 bold", width=10)
+        self.start_amount_entry.grid(row=0, column=0)
+
+        self.add_funds_button = Button(self.entry_error_frame,
+                                       font="Arial 14 bold",
+                                       Text="Add Funds",
+                                       command=self.check_funds)
+        self.add_funds_button.grid(row=0, column=1)
+
+        self.amount_error_label = Label(self.entry_error_frame, fg="maroon",
+                                        text="", font="Arial 10 bold", wrap=275,
+                                        justify=LEFT)
+        self.amount_error_label.grid(row=1, columnspan=2, pady=5)
+
         # Entry box... (row 2)
         self.start_amount_entry = Entry(self.start_frame, font="Arial 16 bold")
         self.start_amount_entry.grid(row=2)
@@ -53,21 +72,69 @@ class Start:
                                          font=button_font, bg="#99FF33")
         self.highstakes_button.grid(row=0, column=2, pady=10)
 
+        # Disable all stakes button at start
+        self.lowstakes_button.config(state=DISABLED)
+        self.mediumstakes_button.config(state=DISABLED)
+        self.highstakes_button.config(state=DISABLED)
+
         # Help Button
         self.help_button = Button(self.start_frame, text="How to play",
                                   bg="#808080", fg="white", font=button_font)
         self.help_button.grid(row=4, pady=10)
 
-    def to_game(self, stakes):
+    def check_funds(self):
         starting_balance = self.start_amount_entry.get()
-        Game(self, stakes, starting_balance)
 
         # Set error background colours (self assume that there are no
         # Errors at the start...
         error_back = "#ffafaf"
         has_errors = "no"
 
-        # Change backgrounds to white  (for testing purposes)
+        # Change backgrounds to white  (for testing purposes) ...
+        self.start_amount_entry.config(bg="white")
+        self.start_amount_entry.config(text="")
+
+        # Disable all stakes button in case user changes mind and
+        # decreases amount entered.
+        self.lowstakes_button.config(state=DISABLED)
+        self.mediumstakes_button.config(state=DISABLED)
+        self.highstakes_button.config(state=DISABLED)
+
+
+        try:
+            starting_balance = int(starting_balance)
+
+            if starting_balance < 5:
+                has_errors = "yes"
+                error_feedback = "Sorry, the least you " \
+                                "can play with is $5"
+            elif starting_balance > 50:
+                has_errors = "yes"
+                error_feedback = "Too high! the most you can risk in " \
+                                " this game is $50"
+            elif starting_balance >= 15:
+                # enable all buttons
+                self.lowstakes_button.config(state=NORMAL)
+                self.mediumstakes_button.config(state=NORMAL)
+                self.highstakes_button.config(state=NORMAL)
+            elif starting_balance >=10:
+                # enable low and medium stakes buttons
+                self.lowstakes_button.config(state=NOemal )
+
+        except ValueError:
+            has_errors = "yes"
+            error_feedback = "Please enter a dollar amount (no text/ decimals)"
+
+            if has_errors =="yes":
+                self.start_amount_entry.config(bg=error_back)
+                self.amount_error_label.config(text=error_feedback)
+
+            else:
+                Game(self, stakes, starting_balance)
+
+                # hide start up window
+                # root.withdraw()
+
 
 class Game:
     def __init__(self, partner, stake, starting_balance):
