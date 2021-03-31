@@ -152,6 +152,18 @@ class Game:
         print(stake)
         print(starting_balance)
 
+        # initiallise variables
+        self.balance = IntVar()
+
+        # set starting balance to amount entered by user at start of game
+        self.balance.set(starting_balance)
+
+        # GUI Setup
+        self.game.box = Toplevel()
+        self.game.frame = Frame(self.game_box)
+        self.game_frame.grid()
+
+
 
 # main routine
 if __name__ == "__main__":
