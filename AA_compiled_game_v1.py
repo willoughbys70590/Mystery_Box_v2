@@ -159,8 +159,8 @@ class Game:
         self.balance.set(starting_balance)
 
         # GUI Setup
-        self.game.box = Toplevel()
-        self.game.frame = Frame(self.game_box)
+        self.game_box = Toplevel()
+        self.game_frame = Frame(self.game_box)
         self.game_frame.grid()
 
 
