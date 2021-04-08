@@ -91,7 +91,62 @@ class Game:
                                    text=start_text, wrap=300,
                                    justify=LEFT)
         self.balance_label.grid(row=4, pady=10)
-        
+
+        # help and game starts button (row 5)
+        self.help_export_frame = Frame(self.game_frame)
+        self.help_export_frame.grid(row=5, pady=10)
+
+        self.help_button = Button(self.help_export_frame, text="Help / Rules",
+                                  font="Arial 15 bold",
+                                  bg="#003366", fg="White")
+        self.starts_button.grid(row=0, column=1, padx=2)
+
+    def reveal_boxes(self):
+        # retrieve the balance from the initial function...
+        current_balance = self.balance.get()
+        stakes_multiplier = self.multiplier.get()
+
+        round_winnings = 0
+        prizes = []
+        for item in range(0, 3):
+            prize_num = random.randint(1, 100)
+
+            if 0 < prize_num <= 5:
+                prize = "gold\n(${})".format(5* stakes_multiplier)
+                round_winnings += 5 * stakes_multiplier
+            elif 5 < prize_num <=25:
+                prize = "silver\n(${})".format(2* stakes_multiplier)
+                round_winnings += 2 * stakes_multiplier
+            elif 25 < prize_num <= 65:
+                prize = "copper\n(${})".format(1* stakes_multiplier)
+                round_winnings += stakes_multiplier
+            else:
+                prize = "lead\n($0)"
+
+            prizes.append(prize)
+
+        # Display prizes..
+        self.prizel_label.config(text=prizes[0])
+        self.prizes_label.config(text=prizes[1])
+        self.prizes_label.config(text=prizes[2])
+
+        # Deduct cost of game
+        current_balance -= 5 * stakes_multiplier
+
+        # Add winnings
+        current_balance += round_winnings
+
+        # set balance to new balance
+        self.balance.set(current_balance)
+
+        balance_staement = "Game cost: ${} \n" \
+                           "Current Balance: ${}".format(5 * stakes_multiplier,
+                                                         round_winnings,
+                                                         current_balance)
+
+        # Edit label so user can see their balance
+        self.balance_label.configure(text=balance_statement)
+
 
 
 # main routine
