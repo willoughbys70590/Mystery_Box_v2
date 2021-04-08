@@ -98,8 +98,12 @@ class Game:
 
         self.help_button = Button(self.help_export_frame, text="Help / Rules",
                                   font="Arial 15 bold",
-                                  bg="#003366", fg="White")
-        self.starts_button.grid(row=0, column=1, padx=2)
+                                  bg="#707070", fg="White")
+        self.help_button.grid(row=5, pady=10)
+        # start button goes here
+        self.starts_button = Button(self.help_export_frame, text="Game starts",
+                                    bg="#000080", fg="white", font="Arial 15 bold", width=10)
+        self.starts_button.grid(row=5, column=1, pady=1)
 
     def reveal_boxes(self):
         # retrieve the balance from the initial function...
@@ -127,8 +131,8 @@ class Game:
 
         # Display prizes..
         self.prizel_label.config(text=prizes[0])
-        self.prizes_label.config(text=prizes[1])
-        self.prizes_label.config(text=prizes[2])
+        self.prize2_label.config(text=prizes[1])
+        self.prize3_label.config(text=prizes[2])
 
         # Deduct cost of game
         current_balance -= 5 * stakes_multiplier
@@ -139,7 +143,7 @@ class Game:
         # set balance to new balance
         self.balance.set(current_balance)
 
-        balance_staement = "Game cost: ${} \n" \
+        balance_statement = "Game cost: ${} \n" \
                            "Current Balance: ${}".format(5 * stakes_multiplier,
                                                          round_winnings,
                                                          current_balance)
