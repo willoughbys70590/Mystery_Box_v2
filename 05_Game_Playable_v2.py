@@ -22,7 +22,7 @@ class Start:
         Game(self, stakes, starting_balance)
 
         # hide start up window
-        root.withdraw()
+        self.start_frame.destroy()
 
 class Game:
     def __init__(self, partner, stakes, starting_balance):
@@ -40,6 +40,12 @@ class Game:
 
         # GUI Setup
         self.game_box = Toplevel()
+        self.game_frame = Frame(self.game_box)
+        self.game_frame.grid()
+
+        # If users press cross at top game quits
+        self.game_box.protocol('WM_DELETE_WINDOW', self.to_quit)
+
         self.game_frame = Frame(self.game_box)
         self.game_frame.grid()
 
@@ -68,18 +74,23 @@ class Game:
                                   bg=box_back, width=box_width, padx=10, pady=10)
         self.prizel_label.grid(row=0, column=0)
 
-        self.prizel2_label = Label(self.box_frame, text="?\n", font=box_text,
+        self.prize2_label = Label(self.box_frame, text="?\n", font=box_text,
                                    bg=box_back, width=box_width, padx=10, pady=10)
-        self.prizel2_label.grid(row=0, column=1, padx=10)
+        self.prize2_label.grid(row=0, column=1, padx=10)
 
-        self.prizel3_label = Label(self.box_frame, text="?\n", font=box_text,
+        self.prize3_label = Label(self.box_frame, text="?\n", font=box_text,
                                    bg=box_back, width=box_width, padx=10, pady=10)
-        self.prizel3_label.grid(row=0, column=2)
+        self.prize3_label.grid(row=0, column=2)
 
         # Play button goes here (row 3)
         self.play_button = Button(self.game_frame, text="Open Boxes",
                                   bg="#FFFF33", font="Arial 15 bold", width=20,
                                   padx=10, pady=10, command=self.reveal_boxes)
+
+        # Bind button to <enter> (users can push enter to reveal the boxes)
+
+        self.play_button.focus()
+        self.play_button.bind('<Return>', lambda  e: self.reveal_boxes())
         self.play_button.grid(row=3)
 
         # Balance label (row 4)
@@ -100,10 +111,18 @@ class Game:
                                   font="Arial 15 bold",
                                   bg="#707070", fg="White")
         self.help_button.grid(row=5, pady=10)
+
         # start button goes here
         self.starts_button = Button(self.help_export_frame, text="Game starts",
-                                    bg="#000080", fg="white", font="Arial 15 bold", width=10)
-        self.starts_button.grid(row=5, column=1, pady=1)
+                                    font="Arial 15 bold", bg="#003366", fg="white", width=10)
+        self.starts_button.grid(row=5, column=1, padx=1)
+
+        # Quit button
+        self.quit_button = Button(self.game_frame, text="Quit", fg="white",
+                                  bg="#660000", font= "Arial 15 bold", width=20,
+                                  command=self.to_quit, padx=10, pady=10)
+        self.quit_button.grid(row=6, pady=10)
+
 
     def reveal_boxes(self):
         # retrieve the balance from the initial function...
@@ -112,27 +131,35 @@ class Game:
 
         round_winnings = 0
         prizes = []
+        backgrounds = []
         for item in range(0, 3):
             prize_num = random.randint(1, 100)
 
             if 0 < prize_num <= 5:
-                prize = "gold\n(${})".format(5* stakes_multiplier)
+                prize = "gold\n(${})".format(5 * stakes_multiplier)
+                back_color = "#CEA935"     # Gold colour
                 round_winnings += 5 * stakes_multiplier
             elif 5 < prize_num <=25:
-                prize = "silver\n(${})".format(2* stakes_multiplier)
+                prize = "silver\n(${})".format(2 * stakes_multiplier)
+                back_color = "B7B7B5"       # Sliver colour
                 round_winnings += 2 * stakes_multiplier
             elif 25 < prize_num <= 65:
                 prize = "copper\n(${})".format(1* stakes_multiplier)
+                back_color = "BC7F61"       # Copper colour
                 round_winnings += stakes_multiplier
             else:
                 prize = "lead\n($0)"
+                back_color = "595E71"       # Lead colour
 
             prizes.append(prize)
+            backgrounds.append(back_color)
 
         # Display prizes..
-        self.prizel_label.config(text=prizes[0])
-        self.prize2_label.config(text=prizes[1])
-        self.prize3_label.config(text=prizes[2])
+        self.prizel_label.config(text=prizes[0], bg=backgrounds[0])
+
+        self.prize2_label.config(text=prizes[1], bg=backgrounds[1])
+
+        self.prize3_label.config(text=prizes[2], bg=backgrounds[2])
 
         # Deduct cost of game
         current_balance -= 5 * stakes_multiplier
@@ -143,13 +170,26 @@ class Game:
         # set balance to new balance
         self.balance.set(current_balance)
 
-        balance_statement = "Game cost: ${} \n" \
+        balance_statement = "Game cost: ${} \n payback ${} \n" \
                            "Current Balance: ${}".format(5 * stakes_multiplier,
                                                          round_winnings,
                                                          current_balance)
 
         # Edit label so user can see their balance
         self.balance_label.configure(text=balance_statement)
+
+        if current_balance < 5 * stakes_multiplier:
+            self.play_button.config(state=DISABLED)
+            self.game_box.focus()
+            self.play_button.config(text="Game Over")
+
+            balance_statement = "Current balance: ${}\n" \
+                                "Your balance is too low. You can only quit " \
+                                "or view you stats. Sorry about that.".format(current_balance)
+            self.balance_label.config(fg="#660000", font="Arial 10 bold",
+                                      text=balance_statement)
+    def to_quit(self):
+        root.destroy()
 
 
 
