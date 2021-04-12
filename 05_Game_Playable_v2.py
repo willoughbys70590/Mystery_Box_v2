@@ -1,3 +1,5 @@
+# Save as v4 but with images
+
 from tkinter import *
 from functools import partial  # To prevent unwanted windows
 import random
@@ -6,11 +8,12 @@ import random
 class Start:
     def __init__(self, parent):
 
-        # GUI to get starting balance and stakes
-        self.start_frame = Frame(padx=10, pady=10)
+        # Main panel GUI
+        self.start_frame = Frame(parent)
         self.start_frame.grid()
 
-        self.push_me_button = Button(text="Push me", command=self.to_game)
+        self.push_me_button = Button(self.start_frame, text="Push Now",
+                                     command=self.to_game)
         self.push_me_button.grid(row=0, pady=10)
 
     def to_game(self):
@@ -38,10 +41,11 @@ class Game:
         self.multiplier = IntVar()
         self.multiplier.set(stakes)
 
+        # List for holding statistics
+        self.round_stats_list = []
+
         # GUI Setup
         self.game_box = Toplevel()
-        self.game_frame = Frame(self.game_box)
-        self.game_frame.grid()
 
         # If users press cross at top game quits
         self.game_box.protocol('WM_DELETE_WINDOW', self.to_quit)
@@ -64,22 +68,29 @@ class Game:
         self.instructions_label.grid(row=1)
 
         # Boxes go here (row 2)
-        box_text = "Arial 16 bold"
-        box_back = "#b9ea96"    # Light green
-        box_width = 5
+
+
         self.box_frame = Frame(self.game_frame)
         self.box_frame.grid(row=2, pady=10)
 
+        photo = photoimage(file="question.gif")
+
         self.prizel_label = Label(self.box_frame, text="?\n", font=box_text,
-                                  bg=box_back, width=box_width, padx=10, pady=10)
+                                  image=photo,
+                                  padx=10, pady=10)
+        self.prizel_label.photo = photo
         self.prizel_label.grid(row=0, column=0)
 
         self.prize2_label = Label(self.box_frame, text="?\n", font=box_text,
-                                   bg=box_back, width=box_width, padx=10, pady=10)
+                                  image=photo,
+                                  padx=10, pady=10)
+        self.prize2_label.photo = photo
         self.prize2_label.grid(row=0, column=1, padx=10)
 
         self.prize3_label = Label(self.box_frame, text="?\n", font=box_text,
-                                   bg=box_back, width=box_width, padx=10, pady=10)
+                                  image=photo,
+                                  padx=10, pady=10)
+        self.prize3_label.photo = photo
         self.prize3_label.grid(row=0, column=2)
 
         # Play button goes here (row 3)
@@ -131,35 +142,40 @@ class Game:
 
         round_winnings = 0
         prizes = []
-        backgrounds = []
+        start_prizes = []
         for item in range(0, 3):
             prize_num = random.randint(1, 100)
 
             if 0 < prize_num <= 5:
-                prize = "gold\n(${})".format(5 * stakes_multiplier)
-                back_color = "#CEA935"     # Gold colour
+                prize = photoImage(file="gold.gif")
+                prize_list = "gold (${})".format(5 * stakes_multiplier)
                 round_winnings += 5 * stakes_multiplier
             elif 5 < prize_num <=25:
-                prize = "silver\n(${})".format(2 * stakes_multiplier)
-                back_color = "B7B7B5"       # Sliver colour
+                prize = photoImage(file="silver.gif")
+                prize_list = "silver (${})".format(2 * stakes_multiplier)
                 round_winnings += 2 * stakes_multiplier
             elif 25 < prize_num <= 65:
-                prize = "copper\n(${})".format(1* stakes_multiplier)
-                back_color = "BC7F61"       # Copper colour
+                prize = photoImage(file="copper.gif")
+                prize_list = "copper\n(${})".format(1* stakes_multiplier)
                 round_winnings += stakes_multiplier
             else:
-                prize = "lead\n($0)"
-                back_color = "595E71"       # Lead colour
+                prize = phtotImage(file="lead.gif")
+                prize_list = "lead($0)"
 
             prizes.append(prize)
-            backgrounds.append(back_color)
+            start_prizes.append(prize_list)
+
+        photo1 = prizes[0]
+        photo2 = prizes[1]
+        photo3 = prizes[2]
 
         # Display prizes..
-        self.prizel_label.config(text=prizes[0], bg=backgrounds[0])
-
-        self.prize2_label.config(text=prizes[1], bg=backgrounds[1])
-
-        self.prize3_label.config(text=prizes[2], bg=backgrounds[2])
+        self.prizel_label.config(image=photo1)
+        self.prize1_label.photo = photo1
+        self.prize2_label.config(image=photo2)
+        self.prize2_label.photo = photo2
+        self.prize3_label.config(image=photo3)
+        self.prize3_label.photo = photo3
 
         # Deduct cost of game
         current_balance -= 5 * stakes_multiplier
@@ -174,6 +190,13 @@ class Game:
                            "Current Balance: ${}".format(5 * stakes_multiplier,
                                                          round_winnings,
                                                          current_balance)
+
+        # Add round results to statistics_list
+        round_summary = "{} | {} | {} - Cost: ${} | " \
+                        "Payback: ${} | Current Balance: " \
+                        "${}".format(stat_prizes[0], stat_prizes[1],
+                                     stats_prizes[2],
+                                     5 * stakes_multiplier, round)
 
         # Edit label so user can see their balance
         self.balance_label.configure(text=balance_statement)
