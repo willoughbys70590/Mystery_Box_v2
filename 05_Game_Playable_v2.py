@@ -69,26 +69,22 @@ class Game:
 
         # Boxes go here (row 2)
 
-
         self.box_frame = Frame(self.game_frame)
         self.box_frame.grid(row=2, pady=10)
 
-        photo = photoimage(file="question.gif")
+        photo = PhotoImage(file="question.gif")
 
-        self.prizel_label = Label(self.box_frame, text="?\n", font=box_text,
-                                  image=photo,
+        self.prizel_label = Label(self.box_frame,image=photo,
                                   padx=10, pady=10)
         self.prizel_label.photo = photo
         self.prizel_label.grid(row=0, column=0)
 
-        self.prize2_label = Label(self.box_frame, text="?\n", font=box_text,
-                                  image=photo,
+        self.prize2_label = Label(self.box_frame, image=photo,
                                   padx=10, pady=10)
         self.prize2_label.photo = photo
         self.prize2_label.grid(row=0, column=1, padx=10)
 
-        self.prize3_label = Label(self.box_frame, text="?\n", font=box_text,
-                                  image=photo,
+        self.prize3_label = Label(self.box_frame,image=photo,
                                   padx=10, pady=10)
         self.prize3_label.photo = photo
         self.prize3_label.grid(row=0, column=2)
@@ -147,19 +143,19 @@ class Game:
             prize_num = random.randint(1, 100)
 
             if 0 < prize_num <= 5:
-                prize = photoImage(file="gold.gif")
+                prize = PhotoImage(file="gold.gif")
                 prize_list = "gold (${})".format(5 * stakes_multiplier)
                 round_winnings += 5 * stakes_multiplier
-            elif 5 < prize_num <=25:
-                prize = photoImage(file="silver.gif")
+            elif 5 < prize_num <= 25:
+                prize = PhotoImage(file="silver.gif")
                 prize_list = "silver (${})".format(2 * stakes_multiplier)
                 round_winnings += 2 * stakes_multiplier
             elif 25 < prize_num <= 65:
-                prize = photoImage(file="copper.gif")
+                prize = PhotoImage(file="copper.gif")
                 prize_list = "copper\n(${})".format(1* stakes_multiplier)
                 round_winnings += stakes_multiplier
             else:
-                prize = phtotImage(file="lead.gif")
+                prize = PhotoImage(file="lead.gif")
                 prize_list = "lead($0)"
 
             prizes.append(prize)
@@ -196,7 +192,10 @@ class Game:
                         "Payback: ${} | Current Balance: " \
                         "${}".format(stat_prizes[0], stat_prizes[1],
                                      stats_prizes[2],
-                                     5 * stakes_multiplier, round)
+                                     5 * stakes_multiplier, round_winnings,
+                                     current_balance)
+        self.round_stats_list.append(round_summary)
+        print(self.round_stats_list)
 
         # Edit label so user can see their balance
         self.balance_label.configure(text=balance_statement)
@@ -213,8 +212,6 @@ class Game:
                                       text=balance_statement)
     def to_quit(self):
         root.destroy()
-
-
 
 # main routine
 if __name__ == "__main__":
