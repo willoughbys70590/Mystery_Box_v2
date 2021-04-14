@@ -128,7 +128,7 @@ class Start:
 
         if has_errors =="yes":
             self.start_amount_entry.config(bg=error_back)
-            self.amount_error_label.config(text=error_feedback)
+            self.amount_error_label.config(text=error_back)
 
         else:
             # set starting balance to amount enterrd by users
@@ -188,16 +188,15 @@ class Game:
 
         # Boxes go here (row 2)
 
-
         self.box_frame = Frame(self.game_frame)
         self.box_frame.grid(row=2, pady=10)
 
         photo = PhotoImage(file="question.gif")
 
-        self.prizel_label = Label(self.box_frame, image=photo,
+        self.prize1_label = Label(self.box_frame, image=photo,
                                 padx=10, pady=10)
-        self.prizel_label.photo = photo
-        self.prizel_label.grid(row=0, column=0)
+        self.prize1_label.photo = photo
+        self.prize1_label.grid(row=0, column=0)
 
         self.prize2_label = Label(self.box_frame, image=photo,
                                       padx=10, pady=10)
@@ -258,19 +257,26 @@ class Game:
         round_winnings = 0
         prizes = []
         stats_prizes = []
+
+        # Allow photo to change depending on stakes.
+        # Lead not in the list as that is always 0
+        copper = ["copper_low.gif", "copper_med.gif", "copper_high.gif"]
+        silver = ["silver_low.gif", "silver_med.gif", "silver_high.gif"]
+        gold = ["gold_low.gif", "gold_med.gif", "gold_high.gif"]
+
         for item in range(0, 3):
             prize_num = random.randint(1, 100)
 
             if 0 < prize_num <= 5:
-                prize = PhotoImage(file="gold.gif")
+                prize = PhotoImage(file=gold[stakes_multiplier-1])
                 prize_list = "gold (${})".format(5 * stakes_multiplier)
                 round_winnings += 5 * stakes_multiplier
             elif 5 < prize_num <= 25:
-                prize = PhotoImage(file="silver.gif")
+                prize = PhotoImage(file=silver[stakes_multiplier-1])
                 prize_list = "silver (${})".format(2 * stakes_multiplier)
                 round_winnings += 2 * stakes_multiplier
             elif 25 < prize_num <= 65:
-                prize = PhotoImage(file="copper.gif")
+                prize = PhotoImage(file=copper[stakes_multiplier-1])
                 prize_list = "copper\n(${})".format(1 * stakes_multiplier)
                 round_winnings += stakes_multiplier
             else:
@@ -285,7 +291,7 @@ class Game:
         photo3 = prizes[2]
 
         # Display prizes..
-        self.prizel_label.config(image=photo1)
+        self.prize1_label.config(image=photo1)
         self.prize1_label.photo = photo1
         self.prize2_label.config(image=photo2)
         self.prize2_label.photo = photo2
