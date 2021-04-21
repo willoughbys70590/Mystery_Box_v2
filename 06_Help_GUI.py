@@ -35,7 +35,6 @@ class Help:
         # if users cross at top, closes help and 'releases' help button
         self.help_box.protocol('WM_DELETE_WINDOW', partial(self.close_help, partner))
 
-
         # Set up GUI frame
         self.help_frame = Frame(self.help_box, width=300)
         self.help_frame.grid()
@@ -67,10 +66,11 @@ class Help:
                                justify=LEFT, wrap=400, padx=10, pady=10)
         self.help_text.grid(row=1)
 
-        # Dismiss button (row 2)
+        # Dismiss button (row2)
         self.dismiss_btn = Button(self.help_frame, text="Dismiss",
-                                  width=10, bg="#660000", fg="white",
-                                  font="Arial 15 bold")
+                                  width=10, bg="660000", fg="white",
+                                  font="arial 15 bold", command=partial(self.close_help, partner))
+        self.dismiss_btn.grid(row=2)
 
 
     def close_help(self, partner):
