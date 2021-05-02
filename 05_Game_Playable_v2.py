@@ -20,12 +20,11 @@ class Start:
 
         # retrieve strting balance
         starting_balance = 50
-        stakes = 1
+        stakes = 2
 
-        Game(self, stakes, starting_balance)
-
-        # hide start up window
         self.start_frame.destroy()
+        Game(self,stakes,starting_balance)
+
 
 class Game:
     def __init__(self, partner, stakes, starting_balance):
@@ -142,16 +141,25 @@ class Game:
         for item in range(0, 3):
             prize_num = random.randint(1, 100)
 
+        # Allow photo to change depending on stakes.
+        # Lead not in the list as that is always 0.
+        copper =["copper_low.gif", "copper_med.gif", "copper_high.gif"]
+        silver = ["silver_low.gif", "silver_med.gif", "silver_high.gif"]
+        gold = ["gold_low.gif", "gold_med.gif", "gold_high.gif"]
+
+        for item in range(0, 3):
+            prize_num = random.randint(1, 100)
+
             if 0 < prize_num <= 5:
-                prize = PhotoImage(file="gold.gif")
+                prize = PhotoImage(file=gold[stakes_multiplier-1])
                 prize_list = "gold (${})".format(5 * stakes_multiplier)
                 round_winnings += 5 * stakes_multiplier
             elif 5 < prize_num <= 25:
-                prize = PhotoImage(file="silver.gif")
+                prize = PhotoImage(file=silver[stakes_multiplier-1])
                 prize_list = "silver (${})".format(2 * stakes_multiplier)
                 round_winnings += 2 * stakes_multiplier
             elif 25 < prize_num <= 65:
-                prize = PhotoImage(file="copper.gif")
+                prize = PhotoImage(file=copper[stakes_multiplier-1])
                 prize_list = "copper\n(${})".format(1* stakes_multiplier)
                 round_winnings += stakes_multiplier
             else:
@@ -166,7 +174,7 @@ class Game:
         photo3 = prizes[2]
 
         # Display prizes..
-        self.prizel_label.config(image=photo1)
+        self.prize1_label.config(image=photo1)
         self.prize1_label.photo = photo1
         self.prize2_label.config(image=photo2)
         self.prize2_label.photo = photo2
@@ -190,7 +198,7 @@ class Game:
         # Add round results to statistics_list
         round_summary = "{} | {} | {} - Cost: ${} | " \
                         "Payback: ${} | Current Balance: " \
-                        "${}".format(stat_prizes[0], stat_prizes[1],
+                        "${}".format(stats_prizes[0], stats_prizes[1],
                                      stats_prizes[2],
                                      5 * stakes_multiplier, round_winnings,
                                      current_balance)
