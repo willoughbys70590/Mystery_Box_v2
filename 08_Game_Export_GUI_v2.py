@@ -629,3 +629,5 @@ if __name__ == "__main__":
     root.title("Mystrey Box Game")
     something = Start(root)
     root.mainloop()
+
+    print("hello world")
